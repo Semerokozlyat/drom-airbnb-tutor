@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { Nunito } from 'next/font/google';
 import "./globals.css";
 import Navbar from '@/app/components/navbar/Navbar';
+import RegisterModal from "@/app/components/modals/RegisterModal";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -32,6 +33,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className} antialiased`}>
+        <RegisterModal />
         <Navbar />
         {children}
       </body>
