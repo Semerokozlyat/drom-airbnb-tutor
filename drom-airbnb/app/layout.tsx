@@ -4,6 +4,7 @@ import { Nunito } from 'next/font/google';
 import "./globals.css";
 import Navbar from '@/app/components/navbar/Navbar';
 import RegisterModal from "@/app/components/modals/RegisterModal";
+import ToasterProvider from "@/app/providers/ToasterProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -33,6 +34,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${font.className} antialiased`}>
+        <ToasterProvider />
         <RegisterModal />
         <Navbar />
         {children}
