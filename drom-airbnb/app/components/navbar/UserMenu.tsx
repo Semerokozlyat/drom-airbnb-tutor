@@ -5,10 +5,17 @@ import Avatar from '@/app/components/Avatar';
 import MenuItem from '@/app/components/navbar/MenuItem';
 import {useCallback, useState} from "react";
 import useRegisterModal from "@/app/hooks/useRegisterModal";
+import useLoginModal from "@/app/hooks/useLoginModal";
+import {User} from "@prisma/client";
 
-export default function UserMenu() {
+interface UserMenuProps {
+    currentUser?: User | null
+}
+
+export default function UserMenu( { currentUser }: UserMenuProps ) {
     const [isOpen, setIsOpen] = useState(false);
     const registerModal = useRegisterModal();
+    const loginModal = useLoginModal();
 
     const toggleOpen = useCallback(() => {
         setIsOpen((value) => !value);
@@ -36,10 +43,17 @@ export default function UserMenu() {
           {isOpen && (     // render only if menu is open
               <div className="absolute rounded-xl shadow-md w-[40vw] md:w-3/4 bg-white overflow-hidden right-0 top-12 text-sm">
                   <div className="flex flex-col cursor-pointer">
-                      <>
-                          <MenuItem onClick={() => {}} label="Login"/>
-                          <MenuItem onClick={registerModal.onOpen} label="Sign up"/>
-                      </>
+                      { currentUser ? (
+                          <>
+                              <MenuItem onClick={() => {}} label="Login"/>
+                              <MenuItem onClick={() => {}} label="Sign up"/>
+                          </>
+                      ) : (
+                          <>
+                              <MenuItem onClick={loginModal.onOpen} label="Login"/>
+                              <MenuItem onClick={registerModal.onOpen} label="Sign up"/>
+                          </>
+                      )}
                   </div>
               </div>
           )}
