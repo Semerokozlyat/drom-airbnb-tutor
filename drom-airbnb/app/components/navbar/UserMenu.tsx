@@ -4,12 +4,13 @@ import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '@/app/components/Avatar';
 import MenuItem from '@/app/components/navbar/MenuItem';
 import {useCallback, useState} from "react";
+import { signOut } from 'next-auth/react';
 import useRegisterModal from "@/app/hooks/useRegisterModal";
 import useLoginModal from "@/app/hooks/useLoginModal";
-import {User} from "@prisma/client";
+import {SafeUser} from "@/app/types";
 
 interface UserMenuProps {
-    currentUser?: User | null
+    currentUser?: SafeUser | null
 }
 
 export default function UserMenu( { currentUser }: UserMenuProps ) {
@@ -36,7 +37,7 @@ export default function UserMenu( { currentUser }: UserMenuProps ) {
               >
                   <AiOutlineMenu />
                   <div className="hidden md:block">
-                      <Avatar />
+                      <Avatar src={currentUser?.image} />
                   </div>
               </div>
           </div>
@@ -45,8 +46,13 @@ export default function UserMenu( { currentUser }: UserMenuProps ) {
                   <div className="flex flex-col cursor-pointer">
                       { currentUser ? (
                           <>
-                              <MenuItem onClick={() => {}} label="Login"/>
-                              <MenuItem onClick={() => {}} label="Sign up"/>
+                              <MenuItem onClick={() => {}} label="My trips"/>
+                              <MenuItem onClick={() => {}} label="Favourites"/>
+                              <MenuItem onClick={() => {}} label="My reservations"/>
+                              <MenuItem onClick={() => {}} label="My properties"/>
+                              <MenuItem onClick={() => {}} label="Advertise my home"/>
+                              <hr />
+                              <MenuItem onClick={() => signOut()} label="Logout"/>
                           </>
                       ) : (
                           <>
