@@ -17,6 +17,7 @@ import {useRouter} from "next/navigation";
 
 export default function LoginModal() {
     const router = useRouter();
+
     const registerModal = useRegisterModal();
     const loginModal = useLoginModal();
     const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,12 @@ export default function LoginModal() {
             })
     }
 
+    const toggle = useCallback(() => {
+        // Explanation: when "Create an account" on Login form is clicked, we need to interrupt "login" modal and open the "register" one.
+        loginModal.onClose();
+        registerModal.onOpen();
+    }, [loginModal, registerModal]);
+
     const bodyContent = (
         <div className="flex flex-col gap-4">
             <Heading title="Welcome back" subtitle="Log into your account" />
@@ -76,13 +83,13 @@ export default function LoginModal() {
             <div className="text-neutral-500 text-center mt-4 font-light">
                 <div className="justify-center flex flex-row items-center gap-2">
                     <div>
-                        Already have an account?
+                        First time using our portal?
                     </div>
                     <div
-                        onClick={registerModal.onClose}  // close the modal window on "Log in" click
+                        onClick={toggle}  // switch to "Register" modal action
                         className="text-neutral-800 cursor-pointer hover:underline"
                     >
-                        Log in
+                        Create an account
                     </div>
                 </div>
             </div>
