@@ -2,11 +2,14 @@
 
 import Modal from '@/app/components/modals/Modal';
 import Heading from "@/app/components/Heading";
+import Map from "@/app/components/Map";
 import {categories} from "@/app/components/navbar/Categories";
 import CategoryInput from "@/app/components/inputs/CategoryInput";
+import CountrySelect from "@/app/components/inputs/CountrySelect";
 import useRentModal from '@/app/hooks/useRentModal';
 import {useMemo, useState} from "react";
 import {FieldValues, useForm} from "react-hook-form";
+import dynamic from "next/dynamic";
 
 enum STEPS {
     CATEGORY = 0,
@@ -39,6 +42,12 @@ export default function RentModal() {
     //  actually pass all the selected fields.
 
     const category = watch('category');
+    const location = watch('location');
+
+    // This part means: re-import Map component every time location is changed.
+    const Map = useMemo(() => dynamic(() => import('@/app/components/Map'), {
+        ssr: false,
+    }), [location]);
 
     // We need custom function for "setValue" from above to be able to re-render page.
     const setValueCustom = (id: string, value: any) => {
@@ -102,11 +111,29 @@ export default function RentModal() {
         </div>
     )
 
+    if (step === STEPS.LOCATION) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading
+                    title="Where is your place located?"
+                    subtitle="Help potential customers find you!"
+                />
+                <CountrySelect
+                    value={location}  // this location is the one from func "watch(location)" above. Required to save location choice on Next and Back buttons.
+                    onChange={(value) => setValueCustom('location', value)}
+                />
+                <Map
+                    center={location?.latlng}
+                />
+            </div>
+        )
+    }
+
     return (
         <Modal
             isOpen={rentModal.isOpen}
             onClose={rentModal.onClose}
-            onSubmit={rentModal.onClose}
+            onSubmit={onNext}
             actionLabel={actionLabel}
             secondaryActionLabel={secondaryActionLabel}
             secondaryAction={step == STEPS.CATEGORY ? undefined : onBack}
