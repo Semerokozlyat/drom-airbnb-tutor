@@ -6,6 +6,7 @@ import Map from "@/app/components/Map";
 import {categories} from "@/app/components/navbar/Categories";
 import CategoryInput from "@/app/components/inputs/CategoryInput";
 import CountrySelect from "@/app/components/inputs/CountrySelect";
+import Counter from "@/app/components/inputs/Counter";
 import useRentModal from '@/app/hooks/useRentModal';
 import {useMemo, useState} from "react";
 import {FieldValues, useForm} from "react-hook-form";
@@ -29,7 +30,7 @@ export default function RentModal() {
         defaultValues: {
             category: '',
             location: null,
-            guestCount: 1,
+            guestCount: 1,   // Number of passengers
             roomCount: 1,
             bathroomCount: 1,
             imageSrc: '',   // Must be named as field in the "Listing" model of Prisma schema!
@@ -43,6 +44,9 @@ export default function RentModal() {
 
     const category = watch('category');
     const location = watch('location');
+    const guestCount = watch('guestCount');
+    const roomCount = watch('roomCount');
+    const bathroomCount = watch('bathroomCount');
 
     // This part means: re-import Map component every time location is changed.
     const Map = useMemo(() => dynamic(() => import('@/app/components/Map'), {
@@ -50,7 +54,7 @@ export default function RentModal() {
     }), [location]);
 
     // We need custom function for "setValue" from above to be able to re-render page.
-    const setValueCustom = (id: string, value: any) => {
+    const setCustomValue = (id: string, value: any) => {
         setValue(id, value, {
             shouldValidate: true,
             shouldDirty: true,
@@ -99,7 +103,7 @@ export default function RentModal() {
                     <div key={item.label} className="col-span-1">
                         <CategoryInput
                             onClick={(category) => {
-                                setValueCustom('category', category)
+                                setCustomValue('category', category)
                             }}
                             selected={ category === item.label }  // The "category" here is taken from "watch('category')" above.
                             label={item.label}
@@ -120,10 +124,41 @@ export default function RentModal() {
                 />
                 <CountrySelect
                     value={location}  // this location is the one from func "watch(location)" above. Required to save location choice on Next and Back buttons.
-                    onChange={(value) => setValueCustom('location', value)}
+                    onChange={(value) => setCustomValue('location', value)}
                 />
                 <Map
                     center={location?.latlng}
+                />
+            </div>
+        )
+    }
+
+    if (step === STEPS.INFO) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading
+                    title="Share some basic information about your vehicle"
+                    subtitle="What features does it have?"
+                />
+                <Counter
+                    title="Passengers"
+                    subtitle="How many passengers can take this car aboard?"
+                    value={guestCount}
+                    onChange={(value) => setCustomValue('guestCount', value)}
+                />
+                <hr />
+                <Counter
+                    title="Doors"
+                    subtitle="How many doors does it have?"
+                    value={roomCount}
+                    onChange={(value) => setCustomValue('roomCount', value)}
+                />
+                <hr />
+                <Counter
+                    title="Wheels"
+                    subtitle="How many wheels does it have?"
+                    value={bathroomCount}
+                    onChange={(value) => setCustomValue('bathroomCount', value)}
                 />
             </div>
         )
