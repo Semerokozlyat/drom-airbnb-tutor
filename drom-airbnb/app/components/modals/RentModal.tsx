@@ -7,6 +7,7 @@ import {categories} from "@/app/components/navbar/Categories";
 import CategoryInput from "@/app/components/inputs/CategoryInput";
 import CountrySelect from "@/app/components/inputs/CountrySelect";
 import Counter from "@/app/components/inputs/Counter";
+import ImageUpload from "@/app/components/inputs/ImageUpload";
 import useRentModal from '@/app/hooks/useRentModal';
 import {useMemo, useState} from "react";
 import {FieldValues, useForm} from "react-hook-form";
@@ -47,6 +48,7 @@ export default function RentModal() {
     const guestCount = watch('guestCount');
     const roomCount = watch('roomCount');
     const bathroomCount = watch('bathroomCount');
+    const imageSrc = watch('imageSrc');
 
     // This part means: re-import Map component every time location is changed.
     const Map = useMemo(() => dynamic(() => import('@/app/components/Map'), {
@@ -159,6 +161,21 @@ export default function RentModal() {
                     subtitle="How many wheels does it have?"
                     value={bathroomCount}
                     onChange={(value) => setCustomValue('bathroomCount', value)}
+                />
+            </div>
+        )
+    }
+
+    if (step === STEPS.IMAGES) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading
+                    title="Add a photo of your vehicle"
+                    subtitle="Show what your car looks like!"
+                />
+                <ImageUpload
+                    value={imageSrc}
+                    onChange={(value) => setCustomValue('imageSrc', value)}
                 />
             </div>
         )
