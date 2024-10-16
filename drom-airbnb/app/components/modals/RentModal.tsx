@@ -12,6 +12,7 @@ import useRentModal from '@/app/hooks/useRentModal';
 import {useMemo, useState} from "react";
 import {FieldValues, useForm} from "react-hook-form";
 import dynamic from "next/dynamic";
+import Input from "@/app/components/inputs/Input";
 
 enum STEPS {
     CATEGORY = 0,
@@ -26,6 +27,7 @@ export default function RentModal() {
     const rentModal = useRentModal();
 
     const [step, setStep] = useState(STEPS.CATEGORY);
+    const [isLoading, setIsLoading] = useState(false);
 
     const { register, handleSubmit, setValue, watch, formState: { errors }, reset  } = useForm<FieldValues>({
         defaultValues: {
@@ -176,6 +178,34 @@ export default function RentModal() {
                 <ImageUpload
                     value={imageSrc}
                     onChange={(value) => setCustomValue('imageSrc', value)}
+                />
+            </div>
+        )
+    }
+
+    if (step === STEPS.DESCRIPTION) {
+        bodyContent = (
+            <div className="flex flex-col gap-8">
+                <Heading
+                    title="How would you describe your car?"
+                    subtitle="Short and sweet works best!"
+                />
+                <Input
+                    id="title"
+                    label="Title"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
+                />
+                <hr />
+                <Input
+                    id="description"
+                    label="Description"
+                    disabled={isLoading}
+                    register={register}
+                    errors={errors}
+                    required
                 />
             </div>
         )
